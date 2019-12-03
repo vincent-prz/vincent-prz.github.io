@@ -44,60 +44,9 @@ function h$ghcjsbn_isPrime_s(s, rounds) {
   }
   throw new Error("isPrime_s");
 }
-function h$ghcjsbn_random_b(min, max) {
-  if(h$ghcjsbn_cmp_bb(min, max) >= 0) {
-    return min;
-  }
-  var range = h$ghcjsbn_sub_bb(max, min);
-  var size = 4 + Math.ceil(h$ghcjsbn_nbits_b(range) / 16);
-  var r = h$ghcjsbn_zero_b;
-  for(var i=0;i<size;i++) {
-    var rnd = Math.floor(Math.random()*65536);
-    r = h$ghcjsbn_or_bb(h$ghcsbn_shl_b(r, 16), h$ghcjsbn_mkBigNat_w(rnd));
-  }
-  return h$ghcjsbn_add_bb(h$ghcjsbn_rem_bb(r, range), min);
-}
-function h$ghcjsbn_testPrime_b(n, rounds) {
-  var r = 0, d = n;
-  var nm1 = h$ghcjsbn_sub_bw(n,1);
-  var two = h$ghcjsbn_mkBigNat_w(2);
-  while(h$ghcjsbn_testBit_b(d, 0)) {
-    d = h$ghcjsbn_shr_b(d, 1);
-    r++;
-  }
-  for(var round = 0; round < rounds; round++) {
-    var a = h$ghcjsbn_random_b(two, nm1);
-    var x = h$ghcjsbn_modPow_bbb(a, d, n);
-    if(h$ghcjsbn_eq_bw(x,1) || h$ghcjsbn_eq_bb(x,nm1)) continue;
-    var found = false;
-    for(var rr=0;rr<r;rr++) {
-      x = h$ghcjsbn_modPow_bbb(x, two, n);
-      if(h$ghcjsbn_eq_bb(x, nm1)) {
-        found = true;
-        break;
-      }
-    }
-    if(!found) return 0;
-  }
-  return 1;
-}
-function h$ghcjsbn_testPrime_w(w, rounds) {
-  return h$ghcjsbn_testPrime_b(h$ghcjsbn_mkBigNat_w(w), rounds);
-}
-function h$integer_gmp_next_prime1(w) {
-  var r = h$ghcjsbn_nextPrime_b(h$ghcjsbn_mkBigNat_w(w));
-  return h$ghcjsbn_toWord_b(r);
-}
-function h$ghcjsbn_nextPrime_b(bn) {
-  var rounds = 64;
-  if(h$ghcjsbn_eq_bw(bn, 2)) {
-    return h$ghcjsbn_mkBigNat_w(3);
-  }
-  var i = bn;
-  do {
-    i = h$ghcjsbn_add_bw(i, 2);
-  } while(!h$ghcjsbn_testPrime_b(i, rounds));
-  return i;
+function h$ghcjsbn_isPrime_b(b, rounds) {
+  ;
+  throw new Error("isPrime_b");
 }
 function h$ghcjsbn_cmp_bb(b1, b2) {
   ;
@@ -533,51 +482,14 @@ function h$ghcjsbn_pow_ww(w1, w2) {
   ;
   return t;
 }
-function h$ghcjsbn_modPow_bbb(b, e, m) {
-  var r = h$ghcjsbn_one_b, b = h$ghcjsbn_rem_bb(b, m);
-  while(!h$ghcjsbn_eq_bw(e, 0)) {
-    if(h$ghcjsbn_testBit_b(e, 0)) {
-      r = h$ghcjsbn_rem_bb(h$ghcjsbn_mul_bb(r, b), m);
-    }
-    e = h$ghcjsbn_shr_b(e, 1);
-    b = h$ghcjsbn_rem_bb(h$ghcjsbn_mul_bb(b, b), m);
-  }
-  return r;
+function h$ghcjsbn_modPow_bbb(b, s1, s2) {
+  throw new Error("modPow_bbb");
 }
-function h$ghcjsbn_modPow_bss(b, e, m) {
-  return h$ghcjsbn_modPow_sss(h$ghcjsbn_rem_bw(b, m), e, m);
+function h$ghcjsbn_modPow_bss(b, s1, s2) {
+  throw new Error("modPow_bss");
 }
-function h$ghcjsbn_modPow_sss(b, e, m) {
-  return h$integer_gmp_powm_word(b, e, m);
-}
-function h$ghcjsbn_modular_inverse(a, n) {
-    var t = h$ghcjsbn_zero_b, newt = h$ghcjsbn_one_b;
-    var r = n, newr = a;
-    while(!h$ghcjsbn_cmp_bw(newr, 0)) {
-      var quotient = h$ghcjsbn_div_bb(r, newr);
-      var tmp = newt;
-      newt = h$ghcjsbn_sub_bb(t, h$ghcjsbn_mul_bb(quotient, newt));
-      t = tmp;
-      tmp = newr;
-      newr = h$ghcjsbn_sub_bb(r, h$ghcjsbn_mul_bb(quotient, newr));
-      r = tmp;
-    }
-    if(h$ghcjsbn_cmp_bw(r, 1) > 0) return a;
-    return t;
-}
-function h$ghcjsbn_powModSBigNat(bpos, base, epos, exp, m) {
-  var newBase = bpos ? base : h$ghcjsbn_sub_bb(m, base);
-  var newExp = epos ? exp : h$ghcjsbn_modular_inverse(exp, m);
-  return h$ghcjsbn_modPow_bbb(newBase, newExp, m);
-}
-function h$integer_gmp_powm_word(b, e, m) {
-  var r = 1, b = b % m;
-  while(e !== 0) {
-    if(e % 2 === 1) r = (r * b) % m;
-    e = e >>> 1;
-    b = (b * b) % m;
-  }
-  return r;
+function h$ghcjsbn_modPow_sss(s1, s2, s3) {
+  throw new Error("modPow_sss");
 }
 function h$ghcjsbn_gcd_bb(b1, b2) {
   ;
@@ -859,8 +771,9 @@ function h$ghcjsbn_testBit_b(b, n) {
   if(limb >= b[0]) {
     return false;
   } else {
+    var d = b[limb];
     var bit = n - (28 * limb);
-    return (b[limb+1] & (1 << bit)) !== 0;
+    return (b[limb] & (1 << bit)) !== 0;
   }
 }
 function h$ghcjsbn_popCount_b(b) {
@@ -1075,6 +988,12 @@ function h$ghcjsbn_mkInteger(nonNeg, xs) {
     }
   }
 }
+function h$ghcjsbn_indexBigNat(b, i) {
+  ;
+  ;
+  var bl = b[0];
+  return i >= bl ? 0 : b[i+1];
+}
 function h$ghcjsbn_cmp_bw(b, w) {
   ;
   ;
@@ -1181,9 +1100,9 @@ function h$ghcjsbn_bitBigNat(n) {
 function h$ghcjsbn_integerLog2(i) {
   ;
   if(((i).f === h$integerzmgmpZCGHCziIntegerziTypeziSzh_con_e)) {
-    return h$ghcjsbn_nbits_s(((i).d1))-1;
+    return h$ghcjsbn_nbits_s(((i).d1));
   } else {
-    return h$ghcjsbn_nbits_b(((i).d1))-1;
+    return h$ghcjsbn_nbits_b(((i).d1));
   }
 }
 function h$ghcjsbn_integerLog2IsPowerOf2(i) {
@@ -1242,43 +1161,24 @@ function h$ghcjsbn_sizeof_b(b) {
   return Math.ceil((bl * 28) / 32);
 }
 function h$ghcjsbn_index_b(b, w) {
-  var limb = (32 * w / 28)|0;
-  var l = b[0];
-  var l1 = limb < l ? b[limb+1] : 0;
-  var l2 = (limb+1) < l ? b[limb+2] : 0;
-  var ws = 4 * (w % 7);
-  return (l1 >>> ws) | (l2 << 28 - ws);
+  throw new Error("index_b");
+  ;
+  ;
+  var wbit = 32*w, len = b[0], limb = (wbit / 28) | 0, lb = wbit - (limb * 28);
+  var r = b[limb+1] >>> lb;
+  ;
 }
 function h$ghcjsbn_toDouble_b(nonNeg, b) {
   throw new Error("toDouble_b");
 }
 function h$ghcjsbn_byteArrayToBigNat(ba, len) {
-  return h$ghcjsbn_importBigNatFromByteArray(ba, 0, len, 0);
+  throw new Error("h$ghcjsbn_byteArrayToBigNat not yet implemented");
 }
 function h$ghcjsbn_importBigNatFromAddr(a_d, a_o, len, msbf) {
-  var r = h$ghcjsbn_zero_b;
-  for(var i=0;i<len;i++) {
-    var off = msbf ? i : (len-i-1);
-    var val = a_d.u8[off];
-    var r = h$ghcjsbn_or_bb(h$ghcjsbn_shl_b(r, 8), h$ghcjsbn_mkBigNat_w(val));
-  }
-  return r;
+  throw new Error("h$ghcjsbn_importBigNatFromAddr not yet implemented");
 }
 function h$ghcjsbn_importBigNatFromByteArray(ba, ofs, len, msbf) {
-  return h$ghcjsbn_importBigNatFromAddr(ba, ofs, len, msbf);
-}
-function h$ghcjsbn_exportToAddr_b(bn, a_d, a_o, msbf) {
-  var bytes = h$ghcjsbn_sizeInBase_b(bn, 256);
-  for(var i=0;i<bytes;i++) {
-    var b = h$ghcjsbn_toWord_b(bn) & 255;
-    var off = msbf ? bytes-i-1 : i;
-    bn = h$ghcjsbn_shr_b(bn, 8);
-    a_d.u8[a_o+off] = b;
-  }
-  return bytes;
-}
-function h$ghcjsbn_exportToAddr_w(w, a_d, a_o, msbf) {
-  return h$ghcjsbn_exportToAddr_b(h$ghcjsbn_mkBigNat_w(w), a_d, a_o, msbf);
+  throw new Error("h$ghcjsbn_importBigNatFromByteArray not yet implemented");
 }
 var h$integer_int64ToInteger = h$ghcjsbn_toInteger_s64;
 function h$ghcjsbn_toInteger_s64(s_a, s_b) {
@@ -1407,45 +1307,403 @@ function h$ghcjsbn_encodeDouble_s(m, e) {
   ;
   return r;
 }
-function h$ghcjsbn_sizeInBase_b(bn, base) {
-  if(h$ghcjsbn_eq_bb(bn, h$ghcjsbn_zero_b)) return 1;
-  var bits = h$ghcjsbn_nbits_b(bn);
-  var r;
-  if(h$popCnt32(base) === 1) {
-    var factor = Math.round(Math.log(base)/Math.log(2));
-    r = Math.ceil(bits/factor);
-  } else {
-    r = Math.ceil(bits*Math.log(2)/Math.log(base));
-  }
-  return r;
-}
-function h$integer_gmp_mpn_sizeinbase1(w, base) {
-  return h$ghcjsbn_sizeInBase_b(h$ghcjsbn_mkBigNat_w(w), base);
-}
-function h$dom$sendXHR(xhr, d, cont) {
-    var clear;
-    var error = function () {
-        clear(); cont(2);
-    };
-    var abort = function () {
-        clear(); cont(1);
-    };
-    var load = function () {
-        clear(); cont(0);
-    };
-    clear = function () {
-        xhr.removeEventListener('error', error);
-        xhr.removeEventListener('abort', abort);
-        xhr.removeEventListener('load', load);
-    }
-    xhr.addEventListener('error', error);
-    xhr.addEventListener('abort', abort);
-    xhr.addEventListener('load', load);
-    if(d) {
- xhr.send(d);
+window = typeof window === 'undefined' ? {} : window;
+window['diff'] = function diff(currentObj, newObj, parent, doc) {
+  if (!currentObj && !newObj) return;
+  else if (!currentObj && newObj) window['createNode'](newObj, parent, doc);
+  else if (currentObj && !newObj) window['destroyNode'](currentObj, parent);
+  else {
+    if (currentObj.type === 'vtext') {
+      if (newObj.type === 'vnode') window['replaceTextWithElement'](currentObj, newObj, parent, doc);
+      else window['diffTextNodes'](currentObj, newObj);
     } else {
- xhr.send();
+      if (newObj.type === 'vnode') window['diffVNodes'](currentObj, newObj, parent, doc);
+      else window['replaceElementWithText'](currentObj, newObj, parent, doc);
     }
+  }
+};
+window['destroyNode'] = function destroyNode(obj, parent) {
+  window['callBeforeDestroyedRecursive'](obj);
+  parent.removeChild(obj['domRef']);
+  window['callDestroyedRecursive'](obj);
+};
+window['callDestroyedRecursive'] = function callDestroyedRecursive(obj) {
+  window['callDestroyed'](obj);
+  for (var i in obj.children)
+    window['callDestroyedRecursive'](obj.children[i]);
+};
+window['callDestroyed'] = function callDestroyed(obj) {
+  if (obj['onDestroyed']) obj['onDestroyed']();
+};
+window['callBeforeDestroyed'] = function callBeforeDestroyed(obj) {
+  if (obj['onBeforeDestroyed']) obj['onBeforeDestroyed']();
+};
+window['callBeforeDestroyedRecursive'] = function callBeforeDestroyedRecursive(obj) {
+  window['callBeforeDestroyed'](obj);
+  for (var i in obj.children)
+    window['callBeforeDestroyedRecursive'](obj.children[i]);
+};
+window['diffTextNodes'] = function diffTextNodes(c, n) {
+  if (c['text'] !== n['text']) c['domRef'].textContent = n['text'];
+  n['domRef'] = c['domRef'];
+};
+window['replaceElementWithText'] = function replaceElementWithText(c, n, parent, doc) {
+  n['domRef'] = doc.createTextNode(n['text']);
+  window['callBeforeDestroyedRecursive'](c);
+  parent.replaceChild(n['domRef'], c['domRef']);
+  window['callDestroyedRecursive'](c);
+};
+window['replaceTextWithElement'] = function replaceTextWithElement(c, n, parent, doc) {
+  window['createElement'](n, doc);
+  parent.replaceChild(n['domRef'], c['domRef']);
+  window['callCreated'](n);
+};
+window['callCreated'] = function callCreated(obj) {
+  if (obj['onCreated']) obj['onCreated']();
+};
+window['populate'] = function populate(c, n, doc) {
+  if (!c) c = {
+              props: null,
+              css: null,
+              children: []
+              }
+  window['diffProps'](c['props'], n['props'], n['domRef'], n['ns'] === 'svg');
+  window['diffCss'](c['css'], n['css'], n['domRef']);
+  window['diffChildren'](c['children'], n['children'], n['domRef'], doc);
+};
+window['diffVNodes'] = function diffVNodes(c, n, parent, doc) {
+  if (c['tag'] === n['tag'] && n['key'] === c['key']) {
+    n['domRef'] = c['domRef'];
+    window['populate'](c, n, doc);
+  } else {
+    window['createElement'](n, doc);
+    window['callBeforeDestroyedRecursive'](c);
+    parent.replaceChild(n['domRef'], c['domRef']);
+    window['callDestroyedRecursive'](c);
+    window['callCreated'](n);
+  }
+};
+window['diffProps'] = function diffProps(cProps, nProps, node, isSvg) {
+  var result, newProp;
+  for (var c in cProps) {
+    newProp = nProps[c];
+    if (!newProp) {
+      if (isSvg || !(c in node))
+        node.removeAttribute(c, cProps[c]);
+      else
+        node[c] = '';
+    } else {
+      if (newProp === cProps[c]) continue;
+      if (isSvg) {
+        if (c === 'href')
+          node.setAttributeNS('http://www.w3.org/1999/xlink', 'href', newProp);
+        else
+          node.setAttribute(c, newProp);
+      } else if (c in node && !(c === 'list' || c === 'form')) {
+        node[c] = newProp;
+      } else {
+        node.setAttribute(c, newProp);
+      }
+    }
+  }
+  for (var n in nProps) {
+    if (cProps && cProps[n]) continue;
+    newProp = nProps[n];
+    if (isSvg) {
+      if (n === 'href')
+        node.setAttributeNS('http://www.w3.org/1999/xlink', 'href', newProp);
+      else
+        node.setAttribute(n, newProp);
+    } else if (n in node && !(n === 'list' || n === 'form')) {
+      node[n] = nProps[n];
+    } else {
+      node.setAttribute(n, newProp);
+    }
+  }
+};
+window['diffCss'] = function diffCss(cCss, nCss, node) {
+  var result;
+  for (var c in cCss) {
+    result = nCss[c];
+    if (!result) {
+      node.style[c] = null;
+    } else if (result !== cCss[c]) {
+      node.style[c] = result;
+    }
+  }
+  for (var n in nCss) {
+    if (cCss && cCss[n]) continue;
+    node.style[n] = nCss[n];
+  }
+};
+window['hasKeys'] = function hasKeys(ns, cs) {
+  return ns.length > 0 && cs.length > 0 && ns[0]['key'] != null && cs[0]['key'] != null;
+};
+window['diffChildren'] = function diffChildren(cs, ns, parent, doc) {
+  var longest = ns.length > cs.length ? ns.length : cs.length;
+  if (window['hasKeys'](ns, cs)) {
+    window['syncChildren'](cs, ns, parent, doc);
+  } else {
+    for (var i = 0; i < longest; i++)
+      window['diff'](cs[i], ns[i], parent, doc);
+  }
+};
+window['createElement'] = function createElement(obj, doc) {
+  if (obj['ns'] === 'svg') {
+    obj['domRef'] = doc.createElementNS('http://www.w3.org/2000/svg', obj['tag']);
+  } else if (obj['ns'] === 'mathml') {
+    obj['domRef'] = doc.createElementNS('http://www.w3.org/1998/Math/MathML', obj['tag']);
+  } else {
+    obj['domRef'] = doc.createElement(obj['tag']);
+  }
+  window['populate'](null, obj, doc);
+};
+window['createNode'] = function createNode(obj, parent, doc) {
+  if (obj.type === 'vnode') window['createElement'](obj, doc);
+  else obj['domRef'] = doc.createTextNode(obj['text']);
+  parent.appendChild(obj['domRef']);
+  window['callCreated'](obj);
+};
+window['syncChildren'] = function syncChildren(os, ns, parent, doc) {
+  var oldFirstIndex = 0,
+  newFirstIndex = 0,
+  oldLastIndex = os.length - 1,
+  newLastIndex = ns.length - 1,
+  nFirst, nLast, oLast, oFirst, tmp, found, node;
+  for (;;) {
+    if (newFirstIndex > newLastIndex && oldFirstIndex > oldLastIndex) {
+      break;
+    }
+    nFirst = ns[newFirstIndex];
+    nLast = ns[newLastIndex];
+    oFirst = os[oldFirstIndex];
+    oLast = os[oldLastIndex];
+    if (oldFirstIndex > oldLastIndex) {
+      window['diff'](null, nFirst, parent, doc);
+      if (!oLast) {
+        parent.insertBefore(nFirst['domRef'], oFirst['domRef']);
+      } else {
+        parent.insertBefore(oLast['domRef'], nFirst['domRef']);
+      }
+      os.splice(newFirstIndex, 0, nFirst);
+      newFirstIndex++;
+    }
+    else if (newFirstIndex > newLastIndex) {
+      tmp = oldLastIndex - oldFirstIndex;
+      while (tmp >= 0) {
+        parent.removeChild(os[oldFirstIndex]['domRef']);
+        os.splice(oldFirstIndex, 1);
+        tmp--;
+      }
+      break;
+    }
+    else if (oFirst['key'] === nFirst['key']) {
+      window['diff'](os[oldFirstIndex++], ns[newFirstIndex++], parent, doc);
+    } else if (oLast['key'] === nLast['key']) {
+      window['diff'](os[oldLastIndex--], ns[newLastIndex--], parent, doc);
+    }
+    else if (oFirst['key'] === nLast['key'] && nFirst['key'] === oLast['key']) {
+      window['swapDomRefs'](node, oFirst['domRef'], oLast['domRef'], parent);
+      window['swap'](os, oldFirstIndex, oldLastIndex);
+      window['diff'](os[oldFirstIndex++], ns[newFirstIndex++], parent, doc);
+      window['diff'](os[oldLastIndex--], ns[newLastIndex--], parent, doc);
+    }
+    else if (oFirst['key'] === nLast['key']) {
+      parent.insertBefore(oFirst['domRef'], oLast['domRef'].nextSibling);
+      os.splice(oldLastIndex,0,os.splice(oldFirstIndex,1)[0]);
+      window['diff'](os[oldLastIndex--], ns[newLastIndex--], parent, doc);
+    }
+    else if (oLast['key'] === nFirst['key']) {
+      parent.insertBefore(oLast['domRef'], oFirst['domRef']);
+      os.splice(oldFirstIndex,0, os.splice(oldLastIndex,1)[0]);
+      window['diff'](os[oldFirstIndex++], nFirst, parent, doc);
+      newFirstIndex++;
+    }
+    else {
+      found = false;
+      tmp = oldFirstIndex;
+      while (tmp <= oldLastIndex) {
+        if (os[tmp]['key'] === nFirst['key']) {
+          found = true;
+          node = os[tmp];
+          break;
+        }
+        tmp++;
+      }
+      if (found) {
+        os.splice(oldFirstIndex,0, os.splice(tmp,1)[0]);
+        parent.insertBefore(node['domRef'], os[oldFirstIndex]['domRef']);
+        window['diff'](os[oldFirstIndex++], nFirst, parent, doc);
+        newFirstIndex++;
+      }
+      else {
+        window['createElement'](nFirst, doc);
+        parent.insertBefore(nFirst['domRef'], oFirst['domRef']);
+        os.splice(oldFirstIndex++, 0, nFirst);
+        newFirstIndex++;
+        oldLastIndex++;
+      }
+    }
+  }
+};
+window['swapDomRefs'] = function swapDomRefs(tmp,a,b,p) {
+  tmp = a.nextSibling;
+  p.insertBefore(a,b);
+  p.insertBefore(b,tmp);
+};
+window['swap']= function swap(os,l,r) {
+  var k = os[l];
+  os[l] = os[r];
+  os[r] = k;
+};
+window = typeof window === 'undefined' ? {} : window;
+window['oldCallbacks'] = [];
+window['currentCallbacks'] = [];
+window['registerCallback'] = function registerCallback(cb) {
+  window['currentCallbacks'].push(cb);
+};
+window['swapCallbacks'] = function swapCallbacks() {
+  window['oldCallbacks'] = window['currentCallbacks'];
+  window['currentCallbacks'] = [];
+};
+window['releaseCallbacks'] = function releaseCallbacks() {
+  for (var i in window['oldCallbacks'])
+    h$release(window['oldCallbacks'][i]);
+  window['oldCallbacks'] = [];
+};
+window['delegate'] = function delegate(mountPointElement, events, getVTree) {
+  for (var event in events) {
+    mountPointElement.addEventListener(events[event][0], function(e) {
+      getVTree(function (obj) {
+ window['delegateEvent'](e, obj, window['buildTargetToElement'](mountPointElement, e.target), []);
+      });
+    }, events[event][1]);
+  }
+};
+window['delegateEvent'] = function delegateEvent (event, obj, stack, parentStack) {
+  if (!stack.length) return;
+  else if (stack.length > 1) {
+    if (obj['domRef'] === stack[0]) parentStack.unshift(obj);
+    for (var o = 0; o < obj.children.length; o++) {
+      if (obj.children[o]['type'] === 'vtext') continue;
+      delegateEvent ( event
+      , obj.children[o]
+      , stack.slice(1)
+      , parentStack
+      );
+     }
+  }
+  else {
+    if (obj['domRef'] === stack[0]) {
+      var eventObj = obj['events'][event.type];
+      if (eventObj) {
+ var options = eventObj.options;
+      if (options['preventDefault'])
+ event.preventDefault();
+      eventObj['runEvent'](event);
+      if (!options['stopPropagation'])
+ window['propogateWhileAble'] (parentStack, event);
+      } else {
+ window['propogateWhileAble'] (parentStack, event);
+      }
+    }
+  }
+};
+window['buildTargetToElement'] = function buildTargetToElement (element, target) {
+  var stack = [];
+  while (element !== target) {
+    stack.unshift (target);
+    target = target.parentNode;
+  }
+  return stack;
+};
+window['propogateWhileAble'] = function propogateWhileAble (parentStack, event) {
+  for (var i = 0; i < parentStack.length; i++) {
+    if (parentStack[i]['events'][event.type]) {
+      var eventObj = parentStack[i]['events'][event.type],
+   options = eventObj['options'];
+      if (options['preventDefault']) event.preventDefault();
+      eventObj['runEvent'](event);
+      if (options['stopPropagation']) break;
+    }
+  }
+};
+window['objectToJSON'] = function objectToJSON (at, obj) {
+  if (typeof at[0] == 'object') {
+    var ret = [];
+    for (var i = 0; i < at.length; i++)
+      ret.push(window['objectToJSON'](at[i], obj));
+    return ret;
+  }
+  for (var i in at) obj = obj[at[i]];
+  if (obj instanceof Array) {
+    var newObj = [];
+    for (var i = 0; i < obj.length; i++)
+      newObj.push(window['objectToJSON']([], obj[i]));
+    return newObj;
+  }
+  var newObj = {};
+  for (var i in obj){
+    if (obj['type'] == 'checkbox' && (i === 'selectionDirection' || i === 'selectionStart' || i === 'selectionEnd'))
+      continue;
+    if (typeof obj[i] == 'string' || typeof obj[i] == 'number' || typeof obj[i] == 'boolean')
+      newObj[i] = obj[i];
+  }
+  return newObj;
+};
+window = typeof window === 'undefined' ? {} : window;
+window['copyDOMIntoVTree'] = function copyDOMIntoVTree(mountPoint, vtree, doc = window.document) {
+  var node = mountPoint ? mountPoint.firstChild : doc.body.firstChild;
+  if (!window['walk'](vtree, node, doc)) {
+    console.warn('Could not copy DOM into virtual DOM, falling back to diff');
+    while (node.firstChild)
+      node.removeChild(node.lastChild);
+    window['diff'](null, vtree, node, doc);
+    return false;
+  }
+  return true;
+}
+window['walk'] = function walk(vtree, node, doc) {
+  var vdomChild,
+      domChild;
+  vtree['domRef'] = node;
+  window['callCreated'](vtree);
+  for (var i = 0; i < vtree.children.length; i++) {
+    vdomChild = vtree['children'][i];
+    domChild = node.childNodes[i];
+    if (vdomChild.type === 'vtext') {
+        if (domChild.nodeType !== Node.TEXT_NODE) return false;
+        if (vdomChild['text'] === domChild.textContent) {
+          vdomChild['domRef'] = domChild;
+        } else {
+          var len = vdomChild.text.length,
+              domNodeText = domChild.textContent.substring(0, len);
+          if (domNodeText !== vdomChild.text) return false;
+          var partialTxt = doc.createTextNode(domNodeText);
+          node.insertBefore(partialTxt, domChild);
+          vdomChild['domRef'] = partialTxt;
+          domChild.textContent = domChild.textContent.substring(len);
+        }
+    } else {
+      if (domChild.nodeType !== Node.ELEMENT_NODE) return false;
+      window['walk'](vdomChild, domChild, doc);
+    }
+  }
+  if (vtree.children.length !== node.childNodes.length) return false;
+  return true;
+}
+window = typeof window === 'undefined' ? {} : window;
+window['callFocus'] = function callFocus(id) {
+  setTimeout(function(){
+    var ele = document.getElementById(id);
+    if (ele && ele.focus) ele.focus()
+  }, 50);
+}
+window['callBlur'] = function callBlur(id) {
+  setTimeout(function(){
+    var ele = document.getElementById(id);
+    if (ele && ele.blur) ele.blur()
+  }, 50);
 }
 function h$fromArray(a) {
     var r = h$ghczmprimZCGHCziTypesziZMZN;
@@ -1619,7 +1877,7 @@ if(String.prototype.codePointAt) {
  if(l===0) return -1;
  var ch = str.charCodeAt(0);
  if(((ch|1023)===0xDBFF)) {
-     return (l>1) ? ((((ch)-0xD800)<<10)+(str.charCodeAt(1))-0xDC00+0x10000) : -1;
+     return (l>1) ? ((((ch)-0xD800)<<10)+(str.charCodeAt(1))-9216) : -1;
  } else {
      return ch;
  }
@@ -1653,7 +1911,7 @@ if(String.prototype.codePointAt) {
  var ch = str.charCodeAt(0);
  if(((ch|1023)===0xDBFF)) {
    if(l > 1) {
-        { h$ret1 = (str.substr(2)); return (((((ch)-0xD800)<<10)+(str.charCodeAt(1))-0xDC00+0x10000)); };
+        { h$ret1 = (str.substr(2)); return (((((ch)-0xD800)<<10)+(str.charCodeAt(1))-9216)); };
    } else {
        { h$ret1 = (null); return (-1); };
    }
@@ -1664,12 +1922,12 @@ if(String.prototype.codePointAt) {
     h$jsstringIndex = function(i, str) {
  var ch = str.charCodeAt(i);
  if(ch != ch) return -1;
- return (((ch|1023)===0xDBFF)) ? ((((ch)-0xD800)<<10)+(str.charCodeAt(i+1))-0xDC00+0x10000) : ch;
+ return (((ch|1023)===0xDBFF)) ? ((((ch)-0xD800)<<10)+(str.charCodeAt(i+1))-9216) : ch;
     }
     h$jsstringUncheckedIndex = function(i, str) {
         ;
  var ch = str.charCodeAt(i);
- return (((ch|1023)===0xDBFF)) ? ((((ch)-0xD800)<<10)+(str.charCodeAt(i+1))-0xDC00+0x10000) : ch;
+ return (((ch|1023)===0xDBFF)) ? ((((ch)-0xD800)<<10)+(str.charCodeAt(i+1))-9216) : ch;
     }
 }
 function h$jsstringUnsnoc(str) {
@@ -1681,7 +1939,7 @@ function h$jsstringUnsnoc(str) {
   var ch = str.charCodeAt(l-1);
   if(((ch|1023)===0xDFFF)) {
     if(l !== 1) {
-      { h$ret1 = (str.substr(0,l-2)); return (((((str.charCodeAt(l-2))-0xD800)<<10)+(ch)-0xDC00+0x10000)); };
+      { h$ret1 = (str.substr(0,l-2)); return (((((str.charCodeAt(l-2))-0xD800)<<10)+(ch)-9216)); };
     } else {
       { h$ret1 = (null); return (-1); };
     }
@@ -1751,14 +2009,14 @@ function h$jsstringLast(str) {
     if(l===0) return -1;
     var ch = str.charCodeAt(l-1);
     if(((ch|1023)===0xDFFF)) {
- return (l>1) ? ((((str.charCodeAt(l-2))-0xD800)<<10)+(ch)-0xDC00+0x10000) : -1;
+ return (l>1) ? ((((str.charCodeAt(l-2))-0xD800)<<10)+(ch)-9216) : -1;
     } else return ch;
 }
 function h$jsstringIndexR(i, str) {
     ;
     if(i < 0 || i > str.length) return -1;
     var ch = str.charCodeAt(i);
-    return (((ch|1023)===0xDFFF)) ? ((((str.charCodeAt(i-1))-0xD800)<<10)+(ch)-0xDC00+0x10000) : ch;
+    return (((ch|1023)===0xDFFF)) ? ((((str.charCodeAt(i-1))-0xD800)<<10)+(ch)-9216) : ch;
 }
 function h$jsstringNextIndex(i, str) {
     ;
@@ -1784,7 +2042,7 @@ function h$jsstringDrop(n, str) {
     while(n--) {
  ch = str.charCodeAt(i++);
  if(((ch|1023)===0xDBFF)) i++;
- if(i >= l) return '';
+ if(i >= l) return str;
     }
     return str.substr(i);
 }
@@ -1841,8 +2099,12 @@ function h$jsstringIntersperse(ch, ys) {
     ;
     var i = 0, l = ys.length, j = 0, a = [], ych;
     if(((ch)>=0x10000)) {
+ var ch1 = ((((ch)-0x10000)>>>10)+0xDC00), ch2 = (((ch)&0x3FF)+0xD800);
  while(j < l) {
-     if(i) a[i++] = ch;
+     if(i) {
+  a[i++] = ch1;
+  a[i++] = ch2;
+     }
      ych = ys.charCodeAt(j++);
      a[i++] = ych;
      if(((ych|1023)===0xDBFF)) a[i++] = ys.charCodeAt(j++);
@@ -1873,9 +2135,9 @@ if(String.prototype.startsWith) {
     h$jsstringStripPrefix = function(p, x) {
  ;
  if(x.startsWith(p)) {
-     return (h$c1(h$baseZCGHCziMaybeziJust_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(p.length)))))));
+     return (h$c1(h$baseZCGHCziBaseziJust_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(p.length)))))));
  } else {
-     return h$baseZCGHCziMaybeziNothing;
+     return h$baseZCGHCziBaseziNothing;
  }
     }
     h$jsstringIsPrefixOf = function(p, x) {
@@ -1886,9 +2148,9 @@ if(String.prototype.startsWith) {
     h$jsstringStripPrefix = function(p, x) {
  ;
  if(x.indexOf(p) === 0) {
-     return (h$c1(h$baseZCGHCziMaybeziJust_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(p.length)))))));
+     return (h$c1(h$baseZCGHCziBaseziJust_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(p.length)))))));
  } else {
-   return h$baseZCGHCziMaybeziNothing;
+   return h$baseZCGHCziBaseziNothing;
  }
     }
     h$jsstringIsPrefixOf = function(p, x) {
@@ -1900,9 +2162,9 @@ if(String.prototype.endsWith) {
     h$jsstringStripSuffix = function(s, x) {
  ;
  if(x.endsWith(s)) {
-     return (h$c1(h$baseZCGHCziMaybeziJust_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(0,x.length-s.length)))))));
+     return (h$c1(h$baseZCGHCziBaseziJust_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(0,x.length-s.length)))))));
  } else {
-   return h$baseZCGHCziMaybeziNothing;
+   return h$baseZCGHCziBaseziNothing;
  }
     }
     h$jsstringIsSuffixOf = function(s, x) {
@@ -1915,9 +2177,9 @@ if(String.prototype.endsWith) {
  var i = x.lastIndexOf(s);
  var l = x.length - s.length;
  if(i !== -1 && i === l) {
-     return (h$c1(h$baseZCGHCziMaybeziJust_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(0,l)))))));
+     return (h$c1(h$baseZCGHCziBaseziJust_con_e, ((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(0,l)))))));
  } else {
-   return h$baseZCGHCziMaybeziNothing;
+   return h$baseZCGHCziBaseziNothing;
  }
     }
       h$jsstringIsSuffixOf = function(s, x) {
@@ -1942,7 +2204,7 @@ function h$jsstringCommonPrefixes(x, y) {
     var lx = x.length, ly = y.length, i = 0, cx;
     var l = lx <= ly ? lx : ly;
     if(lx === 0 || ly === 0 || x.charCodeAt(0) !== y.charCodeAt(0)) {
-      return h$baseZCGHCziMaybeziNothing;
+      return h$baseZCGHCziBaseziNothing;
     }
     while(++i<l) {
  cx = x.charCodeAt(i);
@@ -1951,8 +2213,8 @@ function h$jsstringCommonPrefixes(x, y) {
      break;
  }
     }
-  if(i===0) return h$baseZCGHCziMaybeziNothing;
-    return (h$c1(h$baseZCGHCziMaybeziJust_con_e, ((h$c3(h$ghczmprimZCGHCziTupleziZLz2cUz2cUZR_con_e,((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, ((i===lx)?x:((i===ly)?y:x.substr(0,i)))))),((i===lx) ? h$jsstringEmpty : (h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(i))))),((i===ly) ? h$jsstringEmpty : (h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (y.substr(i))))))))));
+  if(i===0) return h$baseZCGHCziBaseziNothing;
+    return (h$c1(h$baseZCGHCziBaseziJust_con_e, ((h$c3(h$ghczmprimZCGHCziTupleziZLz2cUz2cUZR_con_e,((h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, ((i===lx)?x:((i===ly)?y:x.substr(0,i)))))),((i===lx) ? h$jsstringEmpty : (h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (x.substr(i))))),((i===ly) ? h$jsstringEmpty : (h$c1(h$ghcjszmprimZCGHCJSziPrimziJSVal_con_e, (y.substr(i))))))))));
 }
 function h$jsstringBreakOn(b, x) {
     ;
@@ -2098,12 +2360,12 @@ function h$jsstringGroup(x) {
     if(xl === 0) return h$ghczmprimZCGHCziTypesziZMZN;
     var i = xl-1, si, ch, s=xl, r=h$ghczmprimZCGHCziTypesziZMZN;
     var tch = x.charCodeAt(i--);
-    if(((tch|1023)===0xDFFF)) tch = ((((x.charCodeAt(i--))-0xD800)<<10)+(tch)-0xDC00+0x10000);
+    if(((tch|1023)===0xDFFF)) tch = ((((x.charCodeAt(i--))-0xD800)<<10)+(tch)-9216);
     while(i >= 0) {
  si = i;
  ch = x.charCodeAt(i--);
  if(((ch|1023)===0xDFFF)) {
-     ch = ((((x.charCodeAt(i--))-0xD800)<<10)+(ch)-0xDC00+0x10000);
+     ch = ((((x.charCodeAt(i--))-0xD800)<<10)+(ch)-9216);
  }
  if(ch != tch) {
      tch = ch;
@@ -2117,10 +2379,9 @@ function h$jsstringChunksOf1(n, s, x) {
     ;
     var m = s, c = 0, l = x.length, ch;
     if(n <= 0 || l === 0 || s >= l) return -1
-    while(++m < l) {
-        ch = x.charCodeAt(m - 1);
-        if(((ch|1023)===0xDBFF)) ++m;
-        if(++c >= n) break;
+    while(++m < l && ++c < n) {
+ ch = x.charCodeAt(m);
+ if(((ch|1023)===0xDBFF)) ++m;
     }
     var r1 = (m >= l && s === c) ? x : x.substr(s,m-s);
     { h$ret1 = (r1); return (m); };
@@ -2197,7 +2458,7 @@ function h$jsstringUnpack(str) {
     var r = h$ghczmprimZCGHCziTypesziZMZN, i = str.length-1, c;
     while(i >= 0) {
  c = str.charCodeAt(i--);
- if(((c|1023)===0xDFFF)) c = ((((str.charCodeAt(i--))-0xD800)<<10)+(c)-0xDC00+0x10000)
+ if(((c|1023)===0xDFFF)) c = ((((str.charCodeAt(i--))-0xD800)<<10)+(c)-9216)
  r = (h$c2(h$ghczmprimZCGHCziTypesziZC_con_e, (c), (r)));
     }
     return r;
